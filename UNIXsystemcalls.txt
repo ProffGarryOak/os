@@ -1,0 +1,68 @@
+Sure, here's a brief explanation of each system call and its use:
+
+fork
+Use: fork is used to create a new process by duplicating the current process. The new process is called the child process. This is useful for multitasking in an operating system.
+
+Example:
+
+c
+pid_t pid = fork();
+getpid
+Use: getpid returns the process ID of the calling process. This is useful for identifying processes.
+
+Example:
+
+c
+pid_t pid = getpid();
+wait
+Use: wait makes the parent process wait until all of its child processes have terminated. It is useful for synchronizing process termination.
+
+Example:
+
+c
+wait(NULL);
+exec
+Use: exec family of functions replaces the current process image with a new process image. It is useful for running a different program within the same process.
+
+Example:
+
+c
+char *args[] = {"/bin/ls", "-l", NULL};
+execvp(args[0], args);
+exit
+Use: exit terminates the calling process. It is used to end a process gracefully.
+
+Example:
+
+c
+exit(0);
+close
+Use: close closes a file descriptor, so that it no longer refers to any file and may be reused.
+
+Example:
+
+c
+close(fd);
+stat
+Use: stat retrieves information about a file, such as its size, permissions, and modification time. It is used for obtaining file status.
+
+Example:
+
+c
+struct stat sb;
+stat("example.txt", &sb);
+opendir
+Use: opendir opens a directory stream corresponding to the directory name. It is used for reading directories.
+
+Example:
+
+c
+DIR *d = opendir(".");
+readdir
+Use: readdir reads the next entry in the directory stream. It is used for iterating over all entries in a directory.
+
+Example:
+
+c
+struct dirent *dir = readdir(d);
+Feel free to use these examples and explanations in your lab file. If you have any other questions or need further assistance, let me know!

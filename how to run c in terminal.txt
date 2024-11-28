@@ -1,0 +1,49 @@
+Executing a C program in the Kali Linux terminal is pretty straightforward. Here's a step-by-step guide:
+
+1. **Open the Terminal:**
+   - You can open the terminal by pressing `Ctrl+Alt+T` or searching for "Terminal" in the applications menu.
+
+2. **Create a C Program:**
+   - You can use any text editor available in Kali Linux, such as `nano`, `vim`, or `gedit`. For simplicity, let's use `nano`.
+   - To create a file and open it in `nano`, type:
+     ```bash
+     nano your_program.c
+     ```
+   - This will open the `nano` editor. Write your C program here. For example:
+     ```c
+     #include <stdio.h>
+
+     int main() {
+         printf("Hello, World!\n");
+         return 0;
+     }
+     ```
+
+3. **Save and Exit the Editor:**
+   - In `nano`, you can save the file by pressing `Ctrl+O` (write out) and then press `Enter`. To exit `nano`, press `Ctrl+X`.
+
+4. **Compile the Program:**
+     ```
+   - Compile the program by typing:
+     ```bash
+     gcc your_program.c -o your_program
+     ```
+   - Here, `your_program.c` is your source file and `-o your_program` specifies the output file name (`your_program`).
+
+5. **Run the Program:**
+   - After successful compilation, run your program by typing:
+     ```bash
+     ./your_program
+     ```
+
+6. **Example of Complete Process:**
+   - Here's a summary of the commands:
+     ```bash
+     nano your_program.c
+     # (Write the C program in the editor)
+     # (Save and exit the editor)
+     gcc your_program.c -o your_program
+     ./your_program
+     ```
+
+Now, you should see the output of your C program in the terminal. If you encounter any issues or have more questions, feel free to ask!
