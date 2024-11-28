@@ -1,55 +1,62 @@
 #include <stdio.h>
 
-struct Process {
-    int pid;
-    int burst_time;
-    int priority;
-    int arrival_time;
-};
-
-void sortProcesses(struct Process proc[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if (proc[i].arrival_time > proc[j].arrival_time || 
-               (proc[i].arrival_time == proc[j].arrival_time && proc[i].priority > proc[j].priority)) {
-                struct Process temp = proc[i];
-                proc[i] = proc[j];
-                proc[j] = temp;
-            }
-        }
-    }
-}
-
 int main() {
-    int n;
+    int n, total_wt = 0, total_tat = 0;
     printf("Enter number of processes: ");
     scanf("%d", &n);
 
-    struct Process proc[n];
+    int processes[n], burst_time[n], arrival_time[n], wt[n], tat[n], completion_time[n];
+
     for (int i = 0; i < n; i++) {
-        proc[i].pid = i + 1;
-        printf("Enter arrival time, burst time, and priority for process %d: ", i + 1);
-        scanf("%d %d %d", &proc[i].arrival_time, &proc[i].burst_time, &proc[i].priority);
+        processes[i] = i + 1;
+        printf("Enter arrival time and burst time for process %d: ", i + 1);
+        scanf("%d %d", &arrival_time[i], &burst_time[i]);
     }
 
-    sortProcesses(proc, n);
-
-    int wt[n], tat[n], total_wt = 0, total_tat = 0, current_time = 0;
-
+    // Sort processes by arrival time
     for (int i = 0; i < n; i++) {
-        if (current_time < proc[i].arrival_time) {
-            current_time = proc[i].arrival_time;
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arrival_time[j] > arrival_time[j + 1]) {
+                // Swap arrival times
+                int temp = arrival_time[j];
+                arrival_time[j] = arrival_time[j + 1];
+                arrival_time[j + 1] = temp;
+
+                // Swap burst times
+                temp = burst_time[j];
+                burst_time[j] = burst_time[j + 1];
+                burst_time[j + 1] = temp;
+
+                // Swap process numbers
+                temp = processes[j];
+                processes[j] = processes[j + 1];
+                processes[j + 1] = temp;
+            }
         }
-        wt[i] = current_time - proc[i].arrival_time;
-        current_time += proc[i].burst_time;
-        tat[i] = proc[i].burst_time + wt[i];
     }
 
-    printf("Processes  %-12s  %-12s  %-12s  %-14s  %-16s\n", "Arrival time", "Burst time", "Priority", "Waiting time", "Turnaround time");
+    wt[0] = 0;
+    completion_time[0] = arrival_time[0] + burst_time[0];
+    tat[0] = burst_time[0];
+    
+    for (int i = 1; i < n; i++) {
+        if (arrival_time[i] > completion_time[i - 1]) {
+            completion_time[i] = arrival_time[i] + burst_time[i];
+        } else {
+            completion_time[i] = completion_time[i - 1] + burst_time[i];
+        }
+        wt[i] = completion_time[i] - arrival_time[i] - burst_time[i];
+        if (wt[i] < 0) {
+            wt[i] = 0;
+        }
+        tat[i] = burst_time[i] + wt[i];
+    }
+
+    printf("Processes  %-12s  %-12s  %-14s  %-16s  %-16s\n", "Arrival time", "Burst time", "Waiting time", "Turnaround time", "Completion time");
     for (int i = 0; i < n; i++) {
         total_wt += wt[i];
         total_tat += tat[i];
-        printf("%-10d  %-12d  %-12d  %-12d  %-14d  %-16d\n", proc[i].pid, proc[i].arrival_time, proc[i].burst_time, proc[i].priority, wt[i], tat[i]);
+        printf("%-10d  %-12d  %-12d  %-14d  %-16d  %-16d\n", processes[i], arrival_time[i], burst_time[i], wt[i], tat[i], completion_time[i]);
     }
 
     printf("Average waiting time = %.2f\n", (float)total_wt / n);
