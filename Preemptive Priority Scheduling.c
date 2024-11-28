@@ -5,6 +5,7 @@ struct Process {
     int pid;
     int burst_time;
     int priority;
+    int arrival_time;
     int remaining_time;
 };
 
@@ -16,8 +17,8 @@ int main() {
     struct Process proc[n];
     for (int i = 0; i < n; i++) {
         proc[i].pid = i + 1;
-        printf("Enter burst time and priority for process %d: ", i + 1);
-        scanf("%d %d", &proc[i].burst_time, &proc[i].priority);
+        printf("Enter arrival time, burst time, and priority for process %d: ", i + 1);
+        scanf("%d %d %d", &proc[i].arrival_time, &proc[i].burst_time, &proc[i].priority);
         proc[i].remaining_time = proc[i].burst_time;
     }
 
@@ -28,11 +29,18 @@ int main() {
     for (int i = 0; i < n; i++) is_completed[i] = 0;
 
     while (completed != n) {
+        int found = 0;
         for (int i = 0; i < n; i++) {
-            if ((proc[i].remaining_time > 0) && (proc[i].priority < min_priority)) {
+            if ((proc[i].arrival_time <= current_time) && (proc[i].remaining_time > 0) && (proc[i].priority < min_priority)) {
                 min_priority = proc[i].priority;
                 shortest = i;
+                found = 1;
             }
+        }
+
+        if (found == 0) {
+            current_time++;
+            continue;
         }
 
         proc[shortest].remaining_time--;
@@ -41,17 +49,18 @@ int main() {
         if (proc[shortest].remaining_time == 0) {
             completed++;
             finish_time = current_time + 1;
-            wt[shortest] = finish_time - proc[shortest].burst_time;
-            tat[shortest] = finish_time;
+            wt[shortest] = finish_time - proc[shortest].burst_time - proc[shortest].arrival_time;
+            if (wt[shortest] < 0) wt[shortest] = 0;
+            tat[shortest] = finish_time - proc[shortest].arrival_time;
         }
         current_time++;
     }
 
-    printf("Processes  %-12s  %-12s  %-14s  %-16s\n", "Burst time", "Priority", "Waiting time", "Turnaround time");
+    printf("Processes  %-12s  %-12s  %-12s  %-14s  %-16s\n", "Arrival time", "Burst time", "Priority", "Waiting time", "Turnaround time");
     for (int i = 0; i < n; i++) {
         total_wt += wt[i];
         total_tat += tat[i];
-        printf("%-10d  %-12d  %-12d  %-14d  %-16d\n", proc[i].pid, proc[i].burst_time, proc[i].priority, wt[i], tat[i]);
+        printf("%-10d  %-12d  %-12d  %-12d  %-14d  %-16d\n", proc[i].pid, proc[i].arrival_time, proc[i].burst_time, proc[i].priority, wt[i], tat[i]);
     }
 
     printf("Average waiting time = %.2f\n", (float)total_wt / n);
